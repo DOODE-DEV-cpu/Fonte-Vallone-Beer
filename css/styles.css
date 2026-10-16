@@ -25,10 +25,10 @@
   --gutter: clamp(16px, 4vw, 48px);
   --nav-h: 84px;
 
-  /* Fallback "photographs": layered gradients evoking Pacentro at dusk,
+  /* Fallback: an illustrated Pacentro skyline at dusk,
      shown until (or if) the real photo loads. */
   --fallback-landscape:
-    radial-gradient(ellipse at 70% 20%, rgba(227, 200, 138, 0.35), transparent 55%),
+    url("../assets/images/pacentro-illustration.svg"),
     linear-gradient(180deg, #2b2a2c 0%, #4b4036 45%, #2a2219 70%, #120f0b 100%);
 }
 

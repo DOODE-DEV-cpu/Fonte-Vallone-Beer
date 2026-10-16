@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1d24"/>
+      <stop offset=".45" stop-color="#4a3c33"/>
+      <stop offset=".72" stop-color="#b07a45"/>
+      <stop offset="1" stop-color="#e2b877"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".68" cy=".62" r=".35">
+      <stop offset="0" stop-color="#ffe2a8" stop-opacity=".9"/>
+      <stop offset=".4" stop-color="#e9b46a" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#e9b46a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2b877" stop-opacity="0"/>
+      <stop offset="1" stop-color="#e2b877" stop-opacity=".35"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#sun)"/>
+  <!-- Maiella, far ridge -->
+  <path d="M0 520 L140 470 L260 430 L380 455 L520 380 L640 340 L760 372 L880 318 L1000 350 L1120 300 L1240 340 L1380 395 L1500 420 L1600 440 V900 H0Z" fill="#8a6a55" opacity=".55"/>
+  <rect y="300" width="1600" height="300" fill="url(#haze)"/>
+  <!-- Morrone, middle ridge -->
+  <path d="M0 600 L120 560 L250 520 L360 540 L470 500 L600 470 L720 495 L860 455 L980 480 L1100 520 L1240 505 L1380 545 L1500 575 L1600 590 V900 H0Z" fill="#4b3a30"/>
+  <!-- village hill -->
+  <path d="M260 900 L360 760 L470 690 L560 640 L640 612 L720 600 L800 612 L900 650 L1010 700 L1120 760 L1240 900Z" fill="#2c221c"/>
+  <!-- houses -->
+  <g fill="#3a2d24">
+    <rect x="520" y="650" width="46" height="40"/><rect x="570" y="636" width="38" height="56"/><rect x="612" y="628" width="52" height="60"/>
+    <rect x="668" y="618" width="40" height="70"/><rect x="760" y="622" width="48" height="66"/><rect x="812" y="634" width="42" height="58"/>
+    <rect x="858" y="646" width="54" height="50"/><rect x="916" y="664" width="44" height="44"/><rect x="470" y="676" width="44" height="40"/>
+    <rect x="964" y="682" width="50" height="40"/>
+  </g>
+  <g fill="#e9b46a" opacity=".75">
+    <rect x="584" y="656" width="6" height="9"/><rect x="630" y="648" width="6" height="9"/><rect x="684" y="640" width="6" height="9"/>
+    <rect x="780" y="646" width="6" height="9"/><rect x="828" y="656" width="6" height="9"/><rect x="878" y="668" width="6" height="9"/>
+    <rect x="534" y="668" width="6" height="9"/><rect x="930" y="682" width="6" height="9"/>
+  </g>
+  <!-- Caldora castle: three towers -->
+  <g fill="#231b16">
+    <rect x="700" y="560" width="110" height="60"/>
+    <rect x="690" y="470" width="34" height="150"/>
+    <rect x="740" y="440" width="38" height="180"/>
+    <rect x="796" y="488" width="30" height="132"/>
+    <path d="M690 470h34v-10h-6v6h-5v-6h-6v6h-5v-6h-6v6h-6z"/>
+    <path d="M740 440h38v-10h-6v6h-6v-6h-7v6h-6v-6h-7v6h-6z"/>
+    <path d="M796 488h30v-10h-5v6h-5v-6h-5v6h-5v-6h-5v6h-5z"/>
+  </g>
+  <g fill="#e9b46a" opacity=".55">
+    <rect x="755" y="480" width="6" height="14"/><rect x="703" y="510" width="5" height="12"/><rect x="808" y="520" width="5" height="12"/>
+  </g>
+  <!-- foreground -->
+  <path d="M0 900 V760 L120 730 L260 770 L380 800 L520 820 L700 840 L900 835 L1080 815 L1260 780 L1420 740 L1600 720 V900Z" fill="#15110e"/>
+</svg>
