@@ -520,6 +520,93 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @keyframes scrollLine { from { transform: translateY(-100%); } to { transform: translateY(260%); } }
 .hero__coords { margin: 0; font-size: 11px; letter-spacing: 0.24em; color: var(--stone); }
 
+.hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.no-webgl .hero__canvas, .no-webgl .showcase__canvas { display: none; }
+
+.progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 550;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold-2));
+  transform: scaleX(0); transform-origin: left;
+}
+
+/* =========================================================
+   3D SHOWCASE — the bottle becomes each beer as you scroll
+   ========================================================= */
+@property --sc-accent { syntax: "<color>"; inherits: true; initial-value: #e3c88a; }
+.showcase {
+  --n: 4;
+  position: relative;
+  height: calc(var(--n) * 100vh);
+  transition: --sc-accent 0.9s var(--ease);
+  background: var(--ink);
+}
+.showcase__sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  display: flex; align-items: center;
+  background:
+    radial-gradient(ellipse 55% 60% at 70% 50%, color-mix(in srgb, var(--sc-accent) 22%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--ink), var(--ink-2) 50%, var(--ink));
+}
+.showcase__ghost {
+  position: absolute; left: 64%; top: 50%;
+  transform: translate(-50%, -54%);
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: clamp(150px, 30vw, 520px);
+  line-height: 1; white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--sc-accent) 40%, transparent);
+  opacity: 0.55;
+  pointer-events: none; user-select: none;
+}
+.showcase__canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.showcase__fallback { position: absolute; right: 18%; top: 50%; height: 70%; width: auto; transform: translateY(-50%); filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6)); }
+.showcase__ui { position: relative; z-index: 2; }
+.showcase__copy { width: min(460px, 42%); }
+.showcase__copy .eyebrow { color: var(--sc-accent); }
+.showcase__panels { display: grid; }
+.sc-panel {
+  grid-area: 1 / 1;
+  opacity: 0; transform: translateY(36px);
+  transition: opacity 0.6s var(--ease), transform 0.8s var(--ease), visibility 0s 0.6s;
+  visibility: hidden;
+}
+.sc-panel.is-active { opacity: 1; transform: none; visibility: visible; transition-delay: 0.15s, 0.15s, 0s; }
+.sc-panel__style { font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--stone); margin: 0 0 14px; }
+.sc-panel__name { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 7.2vw, 112px); line-height: 0.92; letter-spacing: -0.01em; margin: 0 0 24px; }
+.sc-panel__name em { display: block; font-size: 0.46em; line-height: 1.2; color: var(--sc-accent); margin-top: 8px; }
+.sc-panel__notes { font-size: 17px; color: rgba(243, 236, 223, 0.8); margin: 0 0 30px; max-width: 420px; }
+.sc-panel__foot { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.sc-panel__price { font-family: var(--serif); font-size: 34px; }
+.sc-panel__price small { font-family: var(--sans); font-size: 11px; color: var(--stone); letter-spacing: 0.1em; margin-left: 6px; }
+
+.showcase__rail {
+  position: absolute; z-index: 2;
+  right: max(var(--gutter), env(safe-area-inset-right, 0px)); top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+}
+.sc-dot {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 0;
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--stone);
+  transition: color 0.4s var(--ease);
+}
+.sc-dot span { opacity: 0; transform: translateX(8px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); }
+.sc-dot::after { content: ""; width: 18px; height: 1px; background: currentColor; transition: width 0.5s var(--ease), background 0.4s; }
+.sc-dot:hover, .sc-dot.is-active { color: var(--cream); }
+.sc-dot:hover span, .sc-dot.is-active span { opacity: 1; transform: none; }
+.sc-dot.is-active::after { width: 44px; background: var(--sc-accent); }
+.sc-dot:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 4px; }
+.showcase__hint {
+  position: absolute; z-index: 2; left: 0; right: 0; bottom: 26px;
+  margin: 0; text-align: center;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--stone);
+}
+.showcase__hint span { color: var(--cream); font-variant-numeric: tabular-nums; }
+
 /* =========================================================
    MARQUEE
    ========================================================= */
@@ -1080,6 +1167,24 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .gallery__grid { grid-template-columns: 1fr 1fr; }
   .g-item--tall { grid-row: span 1; }
   .order__veil { background: rgba(15, 13, 10, 0.8); }
+}
+@media (max-width: 900px) {
+  /* phones: bottle on top, copy underneath */
+  .showcase__sticky { align-items: flex-end; padding-bottom: 64px; background:
+    radial-gradient(ellipse 80% 45% at 50% 30%, color-mix(in srgb, var(--sc-accent) 24%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--ink), var(--ink-2) 50%, var(--ink)); }
+  .showcase__ghost { left: 50%; top: 31%; font-size: clamp(130px, 44vw, 320px); }
+  .showcase__copy { width: 100%; }
+  .showcase__copy .eyebrow { display: none; }
+  .sc-panel__name { font-size: clamp(44px, 13vw, 72px); margin-bottom: 14px; }
+  .sc-panel__name em { display: inline; font-size: 0.5em; }
+  .sc-panel__notes { font-size: 15px; line-height: 1.55; margin-bottom: 18px; }
+  .sc-panel__price { font-size: 28px; }
+  .showcase__rail { top: 31%; }
+  .sc-dot span { display: none; }
+  .showcase__fallback { right: 50%; top: 31%; height: 50%; transform: translate(50%, -50%); }
+  .showcase__hint { bottom: 20px; }
+  .hero__canvas { opacity: 0.5; }
 }
 @media (max-width: 600px) {
   :root { --nav-h: 72px; }

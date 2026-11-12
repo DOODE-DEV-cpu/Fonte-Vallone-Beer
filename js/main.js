@@ -31,25 +31,25 @@
   const BEERS = [
     {
       id: "bionda", name: "Bionda", sub: "del Vallone", style: "Helles Lager", abv: 4.8,
-      price: 4.5, family: "light", tag: "Signature", accent: "#e3c88a",
+      price: 4.5, family: "light", tag: "Signature", accent: "#e3c88a", glass: "#7a4a0c", ink: "#1d3b2a",
       notes: "Golden and luminous. Fresh bread, wildflower honey and a clean, mineral finish from Maiella spring water.",
       img: "assets/images/beers/bionda.svg",
     },
     {
       id: "rossa", name: "Rossa", sub: "Torre Caldora", style: "Amber Ale", abv: 5.6,
-      price: 5.0, family: "amber", tag: "Small Batch", accent: "#c8643a",
+      price: 5.0, family: "amber", tag: "Small Batch", accent: "#c8643a", glass: "#531a0a", ink: "#3a1410",
       notes: "Deep copper. Caramel, toasted almond and dried fig, balanced by a gentle herbal bitterness.",
       img: "assets/images/beers/rossa.svg",
     },
     {
       id: "scura", name: "Scura", sub: "Notte sulla Maiella", style: "Dark Doppelbock", abv: 7.2,
-      price: 6.0, family: "dark", tag: "Riserva", accent: "#8a5a3c",
+      price: 6.0, family: "dark", tag: "Riserva", accent: "#8a5a3c", glass: "#0f0906", ink: "#14110e",
       notes: "Velvet and ebony. Cocoa, roasted chestnut and a whisper of liquorice — made for long mountain evenings.",
       img: "assets/images/beers/scura.svg",
     },
     {
       id: "ipa", name: "IPA", sub: "Sorgente Morrone", style: "Italian Pale Ale", abv: 6.1,
-      price: 5.5, family: "light", tag: "Seasonal", accent: "#d9a441",
+      price: 5.5, family: "light", tag: "Seasonal", accent: "#9fb04a", glass: "#1f3a14", ink: "#24402f",
       notes: "Bright and aromatic. Citrus peel, mountain herbs and pine resin over a crisp, dry backbone.",
       img: "assets/images/beers/ipa.svg",
     },
@@ -141,6 +141,7 @@
 
   function startHero() {
     document.body.classList.add("is-ready");
+    window.FVScene.intro();
     heroSlider();
   }
 
@@ -428,6 +429,82 @@
   }
 
   /* ---------------------------------------------------------
+     3D showcase: scroll through the four beers
+     --------------------------------------------------------- */
+  function showcase() {
+    const section = $("#birre");
+    const panels = $("#showcasePanels");
+    const rail = $("#showcaseRail");
+    const ghost = $("#showcaseGhost");
+    const count = $("#showcaseCount");
+    const fallback = $("#showcaseFallback");
+    section.style.setProperty("--n", BEERS.length);
+
+    panels.innerHTML = BEERS.map((b, i) => `
+      <article class="sc-panel" data-i="${i}">
+        <p class="sc-panel__style">${b.style} · ${b.abv.toFixed(1)}% vol · 33 cl</p>
+        <h2 class="sc-panel__name">${b.name} <em>${b.sub}</em></h2>
+        <p class="sc-panel__notes">${b.notes}</p>
+        <div class="sc-panel__foot">
+          <span class="sc-panel__price">${euro(b.price)}<small>/ bottle</small></span>
+          <button class="btn btn--gold btn--sm" data-add-sc="${b.id}"><span class="btn__label">Add to order</span><span class="btn__arrow">+</span></button>
+        </div>
+      </article>`).join("");
+    rail.innerHTML = BEERS.map((b, i) => `<button class="sc-dot" role="tab" data-i="${i}" aria-label="${b.name} ${b.sub}"><span>${b.name}</span></button>`).join("");
+
+    const has3d = window.FVScene.init({ heroCanvas: $("#heroCanvas"), showcaseCanvas: $("#showcaseCanvas"), beers: BEERS });
+    document.documentElement.classList.toggle("no-webgl", !has3d);
+    fallback.hidden = has3d;
+
+    let active = -1;
+    const setActive = (i) => {
+      if (i === active) return;
+      active = i;
+      const b = BEERS[i];
+      $$(".sc-panel", panels).forEach((p, j) => {
+        p.classList.toggle("is-active", j === i);
+        p.toggleAttribute("inert", j !== i);
+      });
+      $$(".sc-dot", rail).forEach((d, j) => { d.classList.toggle("is-active", j === i); d.setAttribute("aria-selected", String(j === i)); });
+      section.style.setProperty("--sc-accent", b.accent);
+      ghost.textContent = b.name;
+      count.textContent = String(i + 1).padStart(2, "0");
+      if (!has3d) fallback.src = b.img;
+    };
+
+    const travel = () => Math.max(section.offsetHeight - window.innerHeight, 1);
+    const onScroll = () => {
+      const p = Math.min(Math.max(-section.getBoundingClientRect().top / travel(), 0), 1);
+      window.FVScene.setProgress(p);
+      setActive(Math.round(p * (BEERS.length - 1)));
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    onScroll();
+
+    rail.addEventListener("click", (e) => {
+      const dot = e.target.closest(".sc-dot");
+      if (!dot) return;
+      const top = section.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + (Number(dot.dataset.i) / (BEERS.length - 1)) * travel(), behavior: reduceMotion ? "auto" : "smooth" });
+    });
+    panels.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-add-sc]");
+      if (btn) cart.add(btn.dataset.addSc, 1);
+    });
+  }
+
+  function progressBar() {
+    const bar = $("#progress");
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+
+  /* ---------------------------------------------------------
      Cart (persisted locally, purely front-end for now)
      --------------------------------------------------------- */
   const cart = {
@@ -622,6 +699,8 @@
     $("#year").textContent = new Date().getFullYear();
     splitChars();
     renderBeers();
+    showcase();
+    progressBar();
     cart.load();
     cart.render();
     applyBackgrounds();
