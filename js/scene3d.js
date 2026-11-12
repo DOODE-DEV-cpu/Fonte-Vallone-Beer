@@ -264,7 +264,7 @@
       transparent: true,
       opacity: 0.7,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
     });
     const points = new THREE.Points(geo, mat);
     return {
