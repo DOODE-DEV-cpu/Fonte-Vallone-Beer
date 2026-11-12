@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 900" role="img" aria-label="Fonte Vallone ROSSA — placeholder bottle">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#0d0a07"/>
+      <stop offset=".22" stop-color="#9c3d1f"/>
+      <stop offset=".42" stop-color="#c8643a"/>
+      <stop offset=".58" stop-color="#9c3d1f"/>
+      <stop offset="1" stop-color="#0d0a07"/>
+    </linearGradient>
+    <linearGradient id="l" x1="0" x2="1">
+      <stop offset="0" stop-color="#d8cdb6"/>
+      <stop offset=".45" stop-color="#f6efe1"/>
+      <stop offset="1" stop-color="#b9ad95"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" x2="1">
+      <stop offset="0" stop-color="#6d5326"/>
+      <stop offset=".5" stop-color="#e7c77d"/>
+      <stop offset="1" stop-color="#6d5326"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="872" rx="120" ry="14" fill="#000" opacity=".35"/>
+  <path d="M168 40h64v120c0 40 18 70 50 110 26 32 38 66 38 110v440c0 22-14 40-36 40H116c-22 0-36-18-36-40V380c0-44 12-78 38-110 32-40 50-70 50-110z" fill="url(#g)"/>
+  <rect x="160" y="22" width="80" height="40" rx="6" fill="url(#cap)"/>
+  <rect x="164" y="118" width="72" height="50" fill="url(#l)"/>
+  <text x="200" y="149" text-anchor="middle" font-family="Georgia,serif" font-size="14" letter-spacing="2" fill="#3a1410">FV</text>
+  <rect x="80" y="430" width="240" height="300" fill="url(#l)"/>
+  <rect x="94" y="444" width="212" height="272" fill="none" stroke="#3a1410" stroke-width="1.5" opacity=".6"/>
+  <path d="M130 520l40-38 22 20 30-34 48 52" fill="none" stroke="#3a1410" stroke-width="2"/>
+  <text x="200" y="560" text-anchor="middle" font-family="Georgia,serif" font-size="17" letter-spacing="5" fill="#3a1410">FONTE VALLONE</text>
+  <line x1="140" y1="575" x2="260" y2="575" stroke="#3a1410" opacity=".5"/>
+  <text x="200" y="615" text-anchor="middle" font-family="Georgia,serif" font-size="34" font-weight="bold" letter-spacing="4" fill="#3a1410">ROSSA</text>
+  <text x="200" y="645" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="15" fill="#3a1410">Torre Caldora</text>
+  <text x="200" y="695" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" letter-spacing="3" fill="#3a1410" opacity=".7">PACENTRO · ABRUZZO</text>
+  <path d="M110 300c6 120 6 400 0 560" stroke="#fff" stroke-width="6" opacity=".12" fill="none" stroke-linecap="round"/>
+</svg>
