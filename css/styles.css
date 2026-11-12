@@ -439,7 +439,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: absolute; inset: 0;
   background:
     linear-gradient(180deg, rgba(15, 13, 10, 0.55) 0%, rgba(15, 13, 10, 0.15) 35%, rgba(15, 13, 10, 0.35) 65%, var(--ink) 100%),
-    radial-gradient(ellipse at 20% 60%, rgba(15, 13, 10, 0.55), transparent 60%);
+    radial-gradient(ellipse at 20% 60%, rgba(15, 13, 10, 0.55), transparent 60%),
+    radial-gradient(ellipse 26% 52% at 77% 50%, rgba(227, 200, 138, 0.3), transparent 75%);
 }
 .hero__grain {
   position: absolute; inset: 0;
@@ -550,7 +551,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   overflow: hidden;
   display: flex; align-items: center;
   background:
-    radial-gradient(ellipse 55% 60% at 70% 50%, color-mix(in srgb, var(--sc-accent) 22%, transparent), transparent 70%),
+    radial-gradient(ellipse 34% 58% at 70% 50%, color-mix(in srgb, var(--sc-accent) 42%, transparent) 0%, color-mix(in srgb, var(--sc-accent) 16%, transparent) 42%, transparent 78%),
     linear-gradient(180deg, var(--ink), var(--ink-2) 50%, var(--ink));
 }
 .showcase__ghost {
@@ -1174,7 +1175,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @media (max-width: 900px) {
   /* phones: bottle on top, copy underneath */
   .showcase__sticky { align-items: flex-end; padding-bottom: 64px; background:
-    radial-gradient(ellipse 80% 45% at 50% 30%, color-mix(in srgb, var(--sc-accent) 24%, transparent), transparent 70%),
+    radial-gradient(ellipse 78% 42% at 50% 30%, color-mix(in srgb, var(--sc-accent) 42%, transparent) 0%, color-mix(in srgb, var(--sc-accent) 16%, transparent) 42%, transparent 78%),
     linear-gradient(180deg, var(--ink), var(--ink-2) 50%, var(--ink)); }
   .showcase__ghost { left: 50%; top: 31%; font-size: clamp(130px, 44vw, 320px); }
   .showcase__copy { width: 100%; }

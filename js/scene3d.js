@@ -283,20 +283,6 @@
     };
   }
 
-  function createGlow(color) {
-    const mat = new THREE.SpriteMaterial({
-      map: radialTexture([[0, "rgba(255,255,255,.55)"], [0.35, "rgba(255,255,255,.18)"], [1, "rgba(255,255,255,0)"]]),
-      color,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
-    const sprite = new THREE.Sprite(mat);
-    sprite.scale.set(5.2, 5.2, 1);
-    sprite.position.z = -1.6;
-    return sprite;
-  }
-
   // The Maiella as a field of gold contour lines, drifting slowly past.
   function createTerrain() {
     const geo = new THREE.PlaneGeometry(46, 20, 60, 22);
@@ -365,7 +351,7 @@
     }
     // lower the drawing resolution when the device is struggling
     setQuality(q) {
-      this.renderer.setPixelRatio(this.baseRatio * q);
+      this.renderer.setPixelRatio(Math.max(Math.min(1, this.baseRatio), this.baseRatio * q));
       this.resize();
     }
     render(t, dt) {
@@ -385,9 +371,8 @@
     const bottle = createBottle(env);
     bottle.setLabel(labels[beer.id]);
     bottle.tint(new THREE.Color(beer.glass), 1);
-    const glow = createGlow(new THREE.Color(beer.accent));
     const bubbles = createBubbles(90, { x: 9, y: 5.4 });
-    stage.scene.add(glow, bubbles.points, bottle.group);
+    stage.scene.add(bubbles.points, bottle.group);
 
     const rest = { x: 0, y: 0, scale: 1, tilt: 0 };
     stage.onLayout = (v) => {
@@ -407,15 +392,13 @@
       const k = introAt === null ? 0 : easeOut(clamp((performance.now() - introAt - 500) / 2200, 0, 1));
       const scroll = clamp(window.scrollY / Math.max(window.innerHeight, 1), 0, 1.2);
       const g = bottle.group;
-      g.visible = glow.visible = k > 0;
+      g.visible = k > 0;
       g.position.x = rest.x;
       g.position.y = rest.y - (1 - k) * 3.2 + Math.sin(t * 0.8) * 0.045 + scroll * 0.9;
       g.scale.setScalar(rest.scale);
       g.rotation.z = rest.tilt + pointer.x * 0.05;
       g.rotation.x = pointer.y * 0.09;
       g.rotation.y = (1 - k) * -4.2 + Math.sin(t * 0.45) * 0.42 + pointer.x * 0.45 + scroll * 1.6;
-      glow.position.set(g.position.x, g.position.y, -1.6);
-      glow.material.opacity = k * 0.5;
       bubbles.update(t, dt);
     };
     return stage;
@@ -430,13 +413,11 @@
     const env = studioEnvironment(stage.renderer);
     stage.scene.fog = new THREE.Fog(0x0f0d0a, 9, 27);
     const bottle = createBottle(env);
-    const glow = createGlow(new THREE.Color(beers[0].accent));
     const bubbles = createBubbles(70, { x: 8, y: 5.4 });
     const terrain = createTerrain();
-    stage.scene.add(terrain.mesh, glow, bubbles.points, bottle.group);
+    stage.scene.add(terrain.mesh, bubbles.points, bottle.group);
 
     const glassColors = beers.map((b) => new THREE.Color(b.glass));
-    const accentColors = beers.map((b) => new THREE.Color(b.accent));
     let shown = 0;
     bottle.setLabel(labels[beers[0].id]);
     bottle.tint(glassColors[0], 1);
@@ -460,7 +441,6 @@
       const index = clamp(Math.floor(rot / TAU + 0.5), 0, beers.length - 1);
       if (index !== shown) { shown = index; bottle.setLabel(labels[beers[index].id]); }
       bottle.tint(glassColors[index], reduceMotion ? 1 : Math.min(1, dt * 5));
-      glow.material.color.lerp(accentColors[index], reduceMotion ? 1 : Math.min(1, dt * 3));
 
       const g = bottle.group;
       g.position.set(rest.x, rest.y + Math.sin(t * 0.8) * 0.04, 0);
@@ -468,8 +448,6 @@
       g.rotation.y = rot + Math.sin(t * 0.5) * 0.14 + pointer.x * 0.3;
       g.rotation.x = pointer.y * 0.08;
       g.rotation.z = 0.06 + Math.sin(rot) * 0.05;
-      glow.position.set(g.position.x, g.position.y, -1.6);
-      glow.material.opacity = 0.42;
       bubbles.update(t, dt);
       if ((tick = !tick)) terrain.update(t * 0.12);
       stage.camera.position.x = pointer.x * 0.12;
@@ -514,7 +492,7 @@
         counted++;
         if (raw > 0.024) slow++;
         if (counted >= 45) {
-          if (slow > 22 && quality > 0.55) {
+          if (slow > 22 && quality > 0.7) {
             quality -= 0.15;
             Object.values(stages).forEach((s) => s.setQuality(quality));
           }
