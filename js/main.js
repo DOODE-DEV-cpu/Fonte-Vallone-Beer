@@ -14,7 +14,9 @@
      Served at 3840px wide (4K). To self-host, drop files in
      assets/images/pacentro/ and change these URLs.
      --------------------------------------------------------- */
-  const commons = (file, width = 3840) =>
+  // 4K on large or high-density screens, 1920px elsewhere (faster to load and decode)
+  const PHOTO_WIDTH = Math.max(screen.width, screen.height) * (window.devicePixelRatio || 1) > 2200 ? 3840 : 1920;
+  const commons = (file, width = PHOTO_WIDTH) =>
     `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=${width}`;
 
   const PHOTOS = {

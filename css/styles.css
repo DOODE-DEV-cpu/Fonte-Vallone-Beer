@@ -151,7 +151,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   box-shadow: 0 10px 30px -12px rgba(201, 164, 92, 0.6);
 }
 .btn--gold:hover { box-shadow: 0 18px 40px -14px rgba(201, 164, 92, 0.85); }
-.btn--ghost { --fg: var(--cream); --fill: var(--cream); --fill-fg: var(--ink); border-color: rgba(243, 236, 223, 0.5); backdrop-filter: blur(6px); }
+.btn--ghost { --fg: var(--cream); --fill: var(--cream); --fill-fg: var(--ink); border-color: rgba(243, 236, 223, 0.5); background: rgba(15, 13, 10, 0.35); }
 .btn--sm { padding: 12px 22px; font-size: 11px; }
 .btn--block { width: 100%; }
 .btn[disabled] { opacity: 0.6; pointer-events: none; }
@@ -311,8 +311,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .nav.is-scrolled {
   --nav-h: 68px;
-  background: rgba(15, 13, 10, 0.82);
-  backdrop-filter: blur(16px) saturate(140%);
+  background: rgba(15, 13, 10, 0.94);
   border-bottom-color: var(--line);
 }
 .nav.is-hidden { transform: translateY(-100%); }
@@ -420,13 +419,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    ========================================================= */
 .hero {
   position: relative;
-  /* grows with its content on short windows, so the buttons never meet the bottom bar */
+  /* grows with its content on short windows; the bottom bar sits in the flow below the copy */
   min-height: 100vh;
   min-height: 100svh;
-  padding-bottom: 132px;
+  padding-bottom: 32px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   overflow: hidden;
 }
 .hero__slides { position: absolute; inset: 0; }
@@ -444,18 +442,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     radial-gradient(ellipse at 20% 60%, rgba(15, 13, 10, 0.55), transparent 60%);
 }
 .hero__grain {
-  position: absolute; inset: -50%;
+  position: absolute; inset: 0;
   pointer-events: none;
   opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 1s steps(4) infinite;
 }
-@keyframes grain {
-  25% { transform: translate(-3%, 2%); }
-  50% { transform: translate(2%, -3%); }
-  75% { transform: translate(-1%, 3%); }
+.hero__content {
+  position: relative; z-index: 2;
+  flex: 1 0 auto;
+  display: flex; flex-direction: column; justify-content: center;
+  padding-top: calc(var(--nav-h) + 24px);
+  padding-bottom: 40px;
 }
-.hero__content { position: relative; z-index: 2; padding-top: calc(var(--nav-h) + 24px); }
 .hero__title {
   font-family: var(--serif);
   font-weight: 400;
@@ -486,23 +484,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .is-ready .hero__meta { transition-delay: 1.4s; }
 
 .hero__meta {
-  position: absolute; left: 0; right: 0; bottom: 32px;
-  z-index: 2;
+  position: relative; z-index: 2;
+  flex: none;
   display: flex; justify-content: space-between; align-items: flex-end;
-  margin: 0 auto;
+  pointer-events: none;
 }
+.hero__meta > * { pointer-events: auto; }
 .hero__dots { display: flex; gap: 10px; }
+/* a 2px line with a tall, easy-to-hit click area */
 .hero__dot {
-  width: 42px; height: 2px;
-  background: rgba(243, 236, 223, 0.3);
+  width: 42px; height: 28px;
   position: relative; overflow: hidden;
   transition: width 0.5s var(--ease);
 }
+.hero__dot::before, .hero__dot::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+}
+.hero__dot::before { background: rgba(243, 236, 223, 0.3); }
 .hero__dot::after {
-  content: ""; position: absolute; inset: 0;
   background: var(--gold);
   transform: scaleX(0); transform-origin: left;
 }
+.hero__dot:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
 .hero__dot:hover { width: 60px; }
 .hero__dot.is-active::after { animation: progress 7s linear forwards; }
 @keyframes progress { to { transform: scaleX(1); } }
@@ -883,8 +886,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .perks span { color: var(--gold); }
 
 .card-form {
-  background: rgba(23, 20, 15, 0.82);
-  backdrop-filter: blur(18px);
+  background: rgba(23, 20, 15, 0.93);
   border: 1px solid var(--line);
   padding: clamp(28px, 4vw, 48px);
   box-shadow: 0 60px 120px -60px rgba(0, 0, 0, 0.9);

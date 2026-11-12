@@ -212,12 +212,12 @@
       emissive: 0x8a5a16,
       emissiveIntensity: 0.16,
     });
-    const glass = new THREE.Mesh(new THREE.LatheGeometry(bottleProfile(), 96), glassMat);
+    const glass = new THREE.Mesh(new THREE.LatheGeometry(bottleProfile(), 72), glassMat);
     inner.add(glass);
 
     const labelMat = new THREE.MeshStandardMaterial({ roughness: 0.82, metalness: 0, envMap: env, envMapIntensity: 0.35 });
     const arc = 2.7;
-    const label = new THREE.Mesh(new THREE.CylinderGeometry(0.3635, 0.3635, 0.78, 96, 1, true, -arc / 2, arc), labelMat);
+    const label = new THREE.Mesh(new THREE.CylinderGeometry(0.3635, 0.3635, 0.78, 64, 1, true, -arc / 2, arc), labelMat);
     label.position.y = 0.66;
     inner.add(label);
 
@@ -299,7 +299,7 @@
 
   // The Maiella as a field of gold contour lines, drifting slowly past.
   function createTerrain() {
-    const geo = new THREE.PlaneGeometry(46, 20, 92, 34);
+    const geo = new THREE.PlaneGeometry(46, 20, 60, 22);
     geo.rotateX(-Math.PI / 2);
     const base = geo.attributes.position.array.slice();
     const mat = new THREE.MeshBasicMaterial({ color: 0xc9a45c, wireframe: true, transparent: true, opacity: 0.2 });
@@ -327,8 +327,11 @@
   class Stage {
     constructor(canvas) {
       this.canvas = canvas;
-      this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      const dpr = window.devicePixelRatio || 1;
+      // dense screens hide jagged edges on their own, so skip the costly smoothing there
+      this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: dpr < 2, powerPreference: "high-performance" });
+      this.baseRatio = Math.min(dpr, 1.5);
+      this.renderer.setPixelRatio(this.baseRatio);
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
       this.renderer.toneMappingExposure = 1.15;
@@ -359,6 +362,11 @@
       const vh = 2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * this.camera.position.z;
       this.view = { w: vh * (w / h), h: vh, aspect: w / h };
       this.onLayout(this.view);
+    }
+    // lower the drawing resolution when the device is struggling
+    setQuality(q) {
+      this.renderer.setPixelRatio(this.baseRatio * q);
+      this.resize();
     }
     render(t, dt) {
       this.update(t, dt);
@@ -442,6 +450,7 @@
 
     let progress = 0;
     let rot = 0;
+    let tick = false;
     stage.setProgress = (p) => { progress = p; };
 
     stage.update = (t, dt) => {
@@ -462,7 +471,7 @@
       glow.position.set(g.position.x, g.position.y, -1.6);
       glow.material.opacity = 0.42;
       bubbles.update(t, dt);
-      terrain.update(t * 0.12);
+      if ((tick = !tick)) terrain.update(t * 0.12);
       stage.camera.position.x = pointer.x * 0.12;
       stage.camera.position.y = -pointer.y * 0.08;
       stage.camera.lookAt(0, 0, 0);
@@ -493,11 +502,24 @@
 
     const clock = new THREE.Clock();
     let t = 0;
+    // adaptive quality: if frames run slow, step the resolution down (never back up)
+    let quality = 1, slow = 0, counted = 0;
     const frame = () => {
-      const dt = Math.min(clock.getDelta(), 0.1);
+      const raw = clock.getDelta();
+      const dt = Math.min(raw, 0.1);
       if (!reduceMotion) t += dt;
-      if (!document.hidden) {
-        Object.values(stages).forEach((s) => { if (s.visible) s.render(t, reduceMotion ? 0 : dt); });
+      const live = document.hidden ? [] : Object.values(stages).filter((s) => s.visible);
+      live.forEach((s) => s.render(t, reduceMotion ? 0 : dt));
+      if (live.length && raw < 0.5) {
+        counted++;
+        if (raw > 0.024) slow++;
+        if (counted >= 45) {
+          if (slow > 22 && quality > 0.55) {
+            quality -= 0.15;
+            Object.values(stages).forEach((s) => s.setQuality(quality));
+          }
+          counted = slow = 0;
+        }
       }
       requestAnimationFrame(frame);
     };
